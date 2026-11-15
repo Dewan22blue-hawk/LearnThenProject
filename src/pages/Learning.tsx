@@ -6,6 +6,7 @@ import {
   createLearningItem,
   createLearningNote,
   deleteLearningItem,
+  deleteLearningNote,
   getLearningItem,
   getReviewForLearning,
   listContentForLearning,
@@ -16,7 +17,9 @@ import {
   getSketch,
   saveSketch,
   updateLearningItem,
+  updateLearningNote,
 } from '../services/learning';
+import { LearningNotesSection } from '../components/learning/LearningNotesSection';
 import { isValidUrl } from '../lib/time';
 import { useToast } from '../hooks/useToast';
 import {
@@ -173,66 +176,6 @@ export function LearningFormPage() {
   );
 }
 
-function toMarkdown(content: string): string {
-  return content.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-}
-
-function buildNoteText(n: import('../types').LearningNote): string {
-  const understanding = toMarkdown(n.understanding ?? '');
-  const parts = [`[Pemahaman]\n${understanding}`];
-  if (n.critical_comment) parts.push(`[Komentar Kritis]\n${toMarkdown(n.critical_comment)}`);
-  if (n.ideas) parts.push(`[Ide Proyek]\n${toMarkdown(n.ideas)}`);
-  if (n.questions) parts.push(`[Pertanyaan Terbuka]\n${toMarkdown(n.questions)}`);
-  return parts.join('\n\n');
-}
-
-function NoteCard({ note: n, index: idx }: { note: import('../types').LearningNote; index: number }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(buildNoteText(n)).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    });
-  };
-
-  return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
-      <div className="mb-2 flex items-center justify-between">
-        <p className="text-xs font-semibold text-slate-500">Catatan {idx + 1}</p>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className={`rounded px-2 py-0.5 text-xs font-medium transition ${
-            copied ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-          }`}
-        >
-          {copied ? '✓ Disalin!' : 'Salin'}
-        </button>
-      </div>
-      <div className="text-slate-800">{n.understanding ? toMarkdown(n.understanding) : ''}</div>
-      {n.critical_comment && (
-        <div className="mt-2">
-          <p className="text-xs font-medium text-slate-500">Komentar Kritis:</p>
-          <div className="text-slate-700">{n.critical_comment ? toMarkdown(n.critical_comment) : ''}</div>
-        </div>
-      )}
-      {n.ideas && (
-        <div className="mt-2">
-          <p className="text-xs font-medium text-slate-500">Ide Proyek:</p>
-          <div className="text-slate-700">{n.ideas ? toMarkdown(n.ideas) : ''}</div>
-        </div>
-      )}
-      {n.questions && (
-        <div className="mt-2">
-          <p className="text-xs font-medium text-slate-500">Pertanyaan Terbuka:</p>
-          <div className="text-slate-700">{n.questions ? toMarkdown(n.questions) : ''}</div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function LearningDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -245,14 +188,6 @@ export function LearningDetailPage() {
 
   // Catatan & Refleksi (multiple notes)
   const [notes, setNotes] = useState<LearningNote[]>([]);
-  const [note, setNote] = useState('');
-  const [criticalComment, setCriticalComment] = useState('');
-  const [ideas, setIdeas] = useState('');
-  const [questions, setQuestions] = useState('');
-  const [showNewNoteForm, setShowNewNoteForm] = useState(false);
-  const [showAdvancedReflection, setShowAdvancedReflection] = useState(false);
-  const [savingNote, setSavingNote] = useState(false);
-  const [noteMsg, setNoteMsg] = useState('');
 
   // Coretan: link papan tulis (mis. tldraw)
   const [noteTab, setNoteTab] = useState<'tulis' | 'coret'>('tulis');
@@ -313,34 +248,39 @@ export function LearningDetailPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const handleSaveNote = async () => {
+  const handleCreateNote = async (values: {
+    understanding: string;
+    critical_comment: string | null;
+    ideas: string | null;
+    questions: string | null;
+  }) => {
     if (!id) return;
-    setNoteMsg('');
-    if (note.trim().length < 100) {
-      setNoteMsg(`Pemahaman masih ${note.trim().length} karakter, minimal 100 karakter.`);
-      return;
+    const created = await createLearningNote(id, values);
+    setNotes((prev) => [...prev, created]);
+    push('Catatan tersimpan.');
+  };
+
+  const handleUpdateNote = async (
+    noteId: string,
+    values: {
+      understanding: string;
+      critical_comment: string | null;
+      ideas: string | null;
+      questions: string | null;
     }
-    setSavingNote(true);
+  ) => {
+    const updated = await updateLearningNote(noteId, values);
+    setNotes((prev) => prev.map((n) => (n.id === noteId ? updated : n)));
+    push('Catatan diperbarui.');
+  };
+
+  const handleDeleteNote = async (noteId: string) => {
     try {
-      const created = await createLearningNote(id, {
-        understanding: note.trim(),
-        critical_comment: criticalComment.trim() || null,
-        ideas: ideas.trim() || null,
-        questions: questions.trim() || null,
-      });
-      setNotes((prev) => [...prev, created]);
-      push('Catatan tersimpan.');
-      // Reset form
-      setNote('');
-      setCriticalComment('');
-      setIdeas('');
-      setQuestions('');
-      setShowAdvancedReflection(false);
-      setShowNewNoteForm(false);
+      await deleteLearningNote(noteId);
+      setNotes((prev) => prev.filter((n) => n.id !== noteId));
+      push('Catatan dihapus.');
     } catch (e) {
-      setNoteMsg(e instanceof Error ? e.message : 'Gagal menyimpan catatan.');
-    } finally {
-      setSavingNote(false);
+      push(e instanceof Error ? e.message : 'Gagal menghapus catatan.', 'error');
     }
   };
 
@@ -574,91 +514,12 @@ export function LearningDetailPage() {
         </div>
 
         {noteTab === 'tulis' ? (
-        <>
-        {/* Daftar catatan yang sudah tersimpan */}
-        {notes.length > 0 && (
-          <div className="mt-3 space-y-2">
-            {notes.map((n, idx) => (
-              <NoteCard key={n.id} note={n} index={idx} />
-            ))}
-          </div>
-        )}
-
-        {/* Form tambah catatan baru */}
-        {showNewNoteForm ? (
-          <div className="mt-3 space-y-3 rounded-lg border border-slate-200 p-3">
-            <p className="text-xs font-semibold text-slate-700">Catatan {notes.length + 1}</p>
-            <Field label="Pemahaman Inti *">
-              <TextArea
-                rows={5}
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="Apa inti materi ini? Konsep apa yang paling penting untuk diingat dan diterapkan. Gunakan **tebalan** untuk tebalan teks."
-              />
-              <p className="mt-1 text-xs text-slate-500">{note.trim().length}/100 karakter minimum</p>
-            </Field>
-
-            <button
-              type="button"
-              onClick={() => setShowAdvancedReflection(!showAdvancedReflection)}
-              className="text-xs font-medium text-slate-600 underline"
-            >
-              {showAdvancedReflection ? '− Sembunyikan refleksi tambahan' : '+ Tambah komentar kritis, ide proyek, atau pertanyaan'}
-            </button>
-
-{showAdvancedReflection && (
-              <div className="space-y-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
-                <Field label="Komentar Kritis / Opini Pribadi" hint="Gunakan **tebalan** untuk tebalan teks. Apakada ada kelemahan pendekatan ini?">
-                  <TextArea
-                    rows={2}
-                    value={criticalComment}
-                    onChange={(e) => setCriticalComment(e.target.value)}
-                    placeholder="cth: **Pendekatan ini bagus** untuk dataset kecil, tetapi kurang optimal jika konkurensi tinggi..."
-                  />
-                </Field>
-                <Field label="Ide Proyek / Bentuk Karya Nyata" hint="Mini project apa yang bisa dibuat?">
-                  <TextArea
-                    rows={2}
-                    value={ideas}
-                    onChange={(e) => setIdeas(e.target.value)}
-                    placeholder="cth: Buat Colab notebook membandingkan **BM25 vs Dense Retrieval**..."
-                  />
-                </Field>
-                <Field label="Pertanyaan Terbuka / Yang Masih Membingungkan" hint="Hal yang perlu dieksplorasi lebih lanjut. Gunakan **tebalan** untuk tebalan teks">
-                  <TextArea
-                    rows={2}
-                    value={questions}
-                    onChange={(e) => setQuestions(e.target.value)}
-                    placeholder="cth: **Bagaimana strategi re-ranking** yang paling hemat latensi?"
-                  />
-                </Field>
-              </div>
-            )}
-
-            {noteMsg && <p className="text-sm text-red-600">{noteMsg}</p>}
-            <div className="flex gap-2">
-              <SecondaryButton
-                type="button"
-                onClick={() => { setShowNewNoteForm(false); setNote(''); setCriticalComment(''); setIdeas(''); setQuestions(''); setNoteMsg(''); setShowAdvancedReflection(false); }}
-                className="flex-1"
-              >
-                Batal
-              </SecondaryButton>
-              <Button onClick={handleSaveNote} disabled={savingNote} className="flex-1">
-                {savingNote ? 'Menyimpan...' : 'Simpan catatan'}
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setShowNewNoteForm(true)}
-            className="mt-3 w-full rounded-lg border border-dashed border-slate-300 py-2.5 text-sm font-medium text-slate-600 hover:border-slate-400 hover:text-slate-900"
-          >
-            + Tambah catatan {notes.length > 0 ? notes.length + 1 : ''}
-          </button>
-        )}
-        </>
+          <LearningNotesSection
+            notes={notes}
+            onCreateNote={handleCreateNote}
+            onUpdateNote={handleUpdateNote}
+            onDeleteNote={handleDeleteNote}
+          />
         ) : (
           <div className="mt-3 space-y-3">
             <Field label="Link papan tulis *" hint="Buat coretan di tldraw.com → Share → tempel linknya di sini">

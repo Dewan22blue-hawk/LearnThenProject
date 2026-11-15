@@ -50,7 +50,7 @@ export function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 ${props.className ?? ''}`}
+      className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 ${props.className ?? ''}`}
     />
   );
 }
@@ -59,7 +59,7 @@ export function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
       {...props}
-      className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 ${props.className ?? ''}`}
+      className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 ${props.className ?? ''}`}
     />
   );
 }
@@ -68,7 +68,7 @@ export function SelectInput(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <select
       {...props}
-      className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 ${props.className ?? ''}`}
+      className={`w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base sm:text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 ${props.className ?? ''}`}
     />
   );
 }

@@ -359,7 +359,7 @@ export default function DiaryPage() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Ceritakan momen 5 detik hari ini. Adegan nyata apa yang membuat hari ini terasa hidup dan berbeda dari kemarin..."
-              className="w-full resize-none border-0 bg-transparent text-sm sm:text-base leading-relaxed text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
+              className="w-full resize-none border-0 bg-transparent text-base leading-relaxed text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0"
               required
             />
           </div>

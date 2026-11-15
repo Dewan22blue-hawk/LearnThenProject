@@ -39,7 +39,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
+      <main className="mx-auto w-full max-w-5xl min-w-0 flex-1 overflow-x-clip px-4 py-6">{children}</main>
 
       <footer className="mt-auto border-t border-slate-200 bg-white py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4">
