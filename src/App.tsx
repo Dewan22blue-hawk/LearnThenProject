@@ -12,6 +12,7 @@ const DiaryPage = lazy(() => import('./pages/Diary'));
 const KeuanganPage = lazy(() => import('./pages/Keuangan'));
 const HasilPage = lazy(() => import('./pages/Hasil'));
 const JejakPage = lazy(() => import('./pages/Jejak'));
+const LapIgPage = lazy(() => import('./pages/LapIg'));
 const LearningDetailPage = lazy(() =>
   import('./pages/Learning').then((m) => ({ default: m.LearningDetailPage })),
 );
@@ -44,6 +45,7 @@ export default function App() {
               <Route path="/materi/:id/ubah" element={<Protected><LearningFormPage /></Protected>} />
               <Route path="/hasil" element={<Protected><HasilPage /></Protected>} />
               <Route path="/jejak" element={<Protected><JejakPage /></Protected>} />
+              <Route path="/lap-ig" element={<Protected><LapIgPage /></Protected>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

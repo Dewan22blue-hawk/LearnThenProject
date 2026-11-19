@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const linkCls = ({ isActive }: { isActive: boolean }) =>
-  `rounded-lg px-3.5 py-2 text-sm font-medium transition ${
+  `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition ${
     isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
   }`;
 
@@ -18,8 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50/40">
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-center px-4 py-2.5">
-          <nav className="flex items-center gap-1.5 overflow-x-auto py-0.5">
+        <div className="mx-auto flex max-w-5xl items-center justify-start sm:justify-center px-4 py-2.5">
+          <nav className="flex items-center gap-1 overflow-x-auto py-0.5">
             <NavLink to="/" className={linkCls}>
               Belajar
             </NavLink>
@@ -34,6 +34,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </NavLink>
             <NavLink to="/jejak" className={linkCls}>
               Jejak
+            </NavLink>
+            <NavLink to="/lap-ig" className={linkCls}>
+              Lap. IG
             </NavLink>
           </nav>
         </div>
