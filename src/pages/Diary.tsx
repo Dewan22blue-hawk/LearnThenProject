@@ -236,7 +236,7 @@ export default function DiaryPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6">
+    <div className="mx-auto w-full max-w-5xl space-y-6">
       {/* Top Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between border-b border-slate-200/80 pb-4">
         <div>
@@ -289,9 +289,9 @@ export default function DiaryPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {/* Date Selector */}
-              <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-2.5 py-1 shadow-xs">
+              <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-2.5 py-1 shadow-sm">
                 <span className="text-[11px] font-medium text-slate-500">
                   {isToday ? 'Hari ini:' : 'Tanggal:'}
                 </span>
@@ -461,62 +461,62 @@ export default function DiaryPage() {
           }
         />
       ) : viewMode === 'cards' ? (
-        /* Mode Kartu Baca */
+        /* Mode Kartu Baca: Aksi Ubah & Hapus di Baris Atas, Isi Catatan Full Width */
         <div className="space-y-3">
           {filteredEntries.map((entry) => {
             const isSelected = editingId === entry.id;
             return (
-              <div
+              <article
                 key={entry.id}
-                className={`group rounded-xl border bg-white p-4 sm:p-5 transition-all shadow-xs ${
+                className={`rounded-xl border bg-white p-4 sm:p-5 transition-all shadow-sm ${
                   isSelected
                     ? 'border-slate-900 ring-1 ring-slate-900'
                     : 'border-slate-200/90 hover:border-slate-300'
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <time
-                        dateTime={entry.entry_date}
-                        className="text-xs font-bold uppercase tracking-wider text-slate-900"
-                      >
-                        {formatFullDateDisplay(entry.entry_date)}
-                      </time>
-                      <span className="text-[11px] font-mono text-slate-400">
-                        {entry.entry_date}
-                      </span>
-                    </div>
-
-                    <p className="mt-2.5 text-sm sm:text-[15px] leading-relaxed text-slate-800 whitespace-pre-wrap">
-                      {entry.content}
-                    </p>
+                {/* Baris Atas: Tanggal di kiri, Ubah & Hapus di kanan */}
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    <time
+                      dateTime={entry.entry_date}
+                      className="text-xs font-bold uppercase tracking-wider text-slate-900"
+                    >
+                      {formatFullDateDisplay(entry.entry_date)}
+                    </time>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {entry.entry_date}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-1 shrink-0 opacity-80 group-hover:opacity-100 transition">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       type="button"
                       onClick={() => handleStartEdit(entry)}
-                      className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 transition"
+                      className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition"
                     >
                       Ubah
                     </button>
                     <button
                       type="button"
                       onClick={() => setDeletingId(entry.id)}
-                      className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition"
+                      className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition"
                     >
                       Hapus
                     </button>
                   </div>
                 </div>
-              </div>
+
+                {/* Isi Catatan Full Width */}
+                <p className="mt-3 w-full text-sm sm:text-[15px] leading-relaxed text-slate-800 whitespace-pre-wrap">
+                  {entry.content}
+                </p>
+              </article>
             );
           })}
         </div>
       ) : (
         /* Mode Tabel Spreadsheet ala Matthew Dicks Homework for Life */
-        <div className="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           <div className="border-b border-slate-200/80 bg-slate-50/80 px-4 py-2.5 flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
               Spreadsheet Refleksi
@@ -524,13 +524,54 @@ export default function DiaryPage() {
             <span className="text-[11px] text-slate-500">Tersinkronisasi ke kalender aktivitas</span>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile: Kartu Full Width dengan Aksi di Atas */}
+          <div className="divide-y divide-slate-100 md:hidden">
+            {filteredEntries.map((entry) => (
+              <div
+                key={entry.id}
+                className={`p-4 space-y-2.5 ${editingId === entry.id ? 'bg-slate-50' : ''}`}
+              >
+                <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-900">
+                      {formatShortDateDisplay(entry.entry_date)}
+                    </span>
+                    <span className="ml-2 text-[11px] font-mono text-slate-400">
+                      {entry.entry_date}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(entry)}
+                      className="rounded border border-slate-200 px-2 py-0.5 text-xs font-medium text-slate-700 hover:bg-slate-100"
+                    >
+                      Ubah
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeletingId(entry.id)}
+                      className="rounded border border-slate-200 px-2 py-0.5 text-xs font-medium text-rose-600 hover:bg-rose-50"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+                <p className="w-full text-sm leading-relaxed text-slate-800 whitespace-pre-wrap">
+                  {entry.content}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: Tabel Spreadsheet */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
                 <tr className="border-b border-slate-200/70 bg-slate-100/50 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
                   <th className="py-2.5 px-4 w-44 whitespace-nowrap">Tanggal</th>
                   <th className="py-2.5 px-4">Momen Berkesan (The Story)</th>
-                  <th className="py-2.5 px-4 w-24 text-right">Tindakan</th>
+                  <th className="py-2.5 px-4 w-28 text-right">Tindakan</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -583,7 +624,7 @@ export default function DiaryPage() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
         >
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
