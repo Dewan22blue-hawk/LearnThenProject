@@ -3,7 +3,44 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Manrope', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ol-ink: #25201e;
+  --ol-muted: #5c4f47;
+  --ol-line: rgb(74 49 33 / 13%);
+  --ol-rim: rgb(255 253 246 / 72%);
+  --ol-edge-light: rgb(255 254 247 / 88%);
+  --ol-edge-shade: rgb(57 40 28 / 12%);
+  --ol-gloss: rgb(255 251 242 / 55%);
+  --ol-rail: rgb(247 238 228 / 76%);
+  --ol-stage: rgb(255 252 248 / 78%);
+  --ol-inner: rgb(255 250 245 / 62%);
+  --ol-raised: rgb(255 252 248 / 92%);
+  --ol-surface: #fbf7f2;
+  --ol-pick: #25201e;
+  --ol-pick-ink: #fffaf5;
+  --ol-accent: #09644f;
+  --ol-shadow: 35 21 14;
+  color-scheme: light;
+}
+
+.dark {
+  --ol-ink: #fbf4ea;
+  --ol-muted: #c7b6a8;
+  --ol-line: rgb(243 221 198 / 14%);
+  --ol-rim: rgb(255 236 212 / 18%);
+  --ol-edge-light: rgb(255 242 225 / 22%);
+  --ol-edge-shade: rgb(8 4 3 / 42%);
+  --ol-gloss: rgb(255 237 213 / 9%);
+  --ol-rail: rgb(38 30 27 / 78%);
+  --ol-stage: rgb(33 26 24 / 82%);
+  --ol-inner: rgb(56 45 41 / 62%);
+  --ol-raised: rgb(62 50 45 / 92%);
+  --ol-surface: #28201d;
+  --ol-pick: #f3ddca;
+  --ol-pick-ink: #231a16;
+  --ol-accent: #4ecba9;
+  --ol-shadow: 6 3 2;
+  color-scheme: dark;
 }
 
 html,
@@ -16,8 +53,112 @@ body,
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  min-height: 100svh;
+  color: var(--ol-ink);
+  font-variant-numeric: tabular-nums;
+  background-color: #efe7de;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 12% 0%, rgb(255 248 238 / 85%), transparent 60%),
+    radial-gradient(ellipse 65% 55% at 92% 14%, rgb(224 205 186 / 65%), transparent 58%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgb(219 233 226 / 45%), transparent 62%);
+  background-attachment: fixed;
+  transition: background-color 0.25s ease, color 0.2s ease;
+}
+
+.dark body {
+  background-color: #181311;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 12% 0%, rgb(68 48 39 / 48%), transparent 62%),
+    radial-gradient(ellipse 65% 55% at 92% 14%, rgb(38 56 50 / 35%), transparent 58%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgb(46 34 29 / 55%), transparent 64%);
+}
+
+/* Spatial Glass Chrome (Top Bar & Navigation Dock) */
+.ol-glass-chrome {
+  border: 1px solid var(--ol-rim);
+  background:
+    linear-gradient(165deg, var(--ol-gloss), transparent 34% 72%, var(--ol-gloss)),
+    var(--ol-rail);
+  box-shadow:
+    inset 1px 1px 1px var(--ol-edge-light),
+    inset -1px -1px 1px var(--ol-edge-shade),
+    0 8px 24px rgb(var(--ol-shadow) / 11%);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+}
+
+.ol-stage-surface {
+  border: 1px solid var(--ol-rim);
+  background: var(--ol-stage);
+  box-shadow:
+    inset 1px 1px 1px var(--ol-edge-light),
+    inset -1px -1px 1px var(--ol-edge-shade),
+    0 18px 48px rgb(var(--ol-shadow) / 10%);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+}
+
+.ol-dock-indicator {
+  position: absolute;
+  inset: 0 auto auto 0;
+  pointer-events: none;
+  visibility: hidden;
+  border-radius: 9999px;
+  background: var(--ol-pick);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 35%),
+    0 2px 8px rgb(var(--ol-shadow) / 18%);
+}
+
+.ol-dock-indicator[data-ready="true"] {
+  visibility: visible;
+  transition:
+    transform 0.36s cubic-bezier(0.24, 0.89, 0.26, 1),
+    width 0.36s cubic-bezier(0.24, 0.89, 0.26, 1),
+    height 0.36s cubic-bezier(0.24, 0.89, 0.26, 1);
+}
+
+/* Cohesive Dark Mode adaptation for existing page components */
+.dark .bg-white {
+  background-color: #261f1c;
+}
+.dark .bg-slate-50,
+.dark .bg-slate-50\/40,
+.dark .bg-slate-50\/60 {
+  background-color: #2f2622;
+}
+.dark .bg-slate-100 {
+  background-color: #382e29;
+}
+.dark .bg-slate-900 {
+  background-color: #f3ddca;
+  color: #231a16;
+}
+.dark .hover\:bg-slate-700:hover {
+  background-color: #e6cbb3;
+}
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover {
+  background-color: #3a302b;
+}
+.dark .text-slate-900 {
+  color: #fbf4ea;
+}
+.dark .text-slate-800 {
+  color: #efe3d5;
+}
+.dark .text-slate-700 {
+  color: #dfd0c1;
+}
+.dark .text-slate-600 {
+  color: #c7b6a8;
+}
+.dark .text-slate-500 {
+  color: #a99789;
+}
+.dark .border-slate-200,
+.dark .border-slate-300 {
+  border-color: rgb(243 221 198 / 16%);
 }
 
 /* Cegah auto-zoom pada iOS Safari & browser mobile saat fokus ke input/textarea/select */
@@ -26,5 +167,12 @@ body {
   textarea,
   select {
     font-size: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

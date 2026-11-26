@@ -33,7 +33,7 @@ export function LoginPage() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4">
-      <h1 className="text-2xl font-bold text-slate-900">OutputLab</h1>
+      <h1 className="text-2xl font-bold text-slate-900">De TRACKER</h1>
       <p className="mt-1 text-sm text-slate-500">Ubah materi belajar menjadi output nyata.</p>
       <Card className="mt-6">
         <h2 className="text-lg font-semibold">Masuk</h2>
@@ -89,7 +89,7 @@ export function RegisterPage() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4">
-      <h1 className="text-2xl font-bold text-slate-900">OutputLab</h1>
+      <h1 className="text-2xl font-bold text-slate-900">De TRACKER</h1>
       <p className="mt-1 text-sm text-slate-500">Mulai sistem belajar-menghasilkan output.</p>
       <Card className="mt-6">
         <h2 className="text-lg font-semibold">Daftar</h2>

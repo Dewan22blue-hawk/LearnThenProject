@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'OutputLab — Ubah Belajar Jadi Output',
-        short_name: 'OutputLab',
+        name: 'De TRACKER — Ubah Belajar Jadi Output',
+        short_name: 'De TRACKER',
         description: 'Ubah materi belajar menjadi catatan, progres, dan konten nyata.',
         theme_color: '#059669',
         background_color: '#f8fafc',
